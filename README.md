@@ -1,0 +1,57 @@
+# TF JSON - Comparativo Postgres JSONB vs MongoDB
+
+Este projeto compara o uso de JSONB no PostgreSQL e documentos no MongoDB para armazenar e consultar JSONs profundamente aninhados.
+
+## Missões
+
+1. **Subir os contêineres via Docker Compose**: Use `docker-compose up -d` para iniciar PostgreSQL e MongoDB.
+
+2. **Inserir um JSON de 15 níveis**: O script `main.py` cria e insere um JSON aninhado com 15 níveis em ambas as bases.
+
+3. **Medir a dificuldade de query no 15º nível**: O script mede o tempo de inserção e consulta, e compara a facilidade.
+
+## Como executar
+
+1. Instale Docker e Docker Compose.
+
+2. Execute `docker-compose up -d` para subir os contêineres.
+
+3. Instale Python e pip.
+
+4. Instale as dependências: `pip install -r requirements.txt` (ou `python -m pip install -r requirements.txt`)
+
+5. Execute o script: `python main.py`
+
+## Para criar repositório GitHub
+
+1. Crie um novo repositório no GitHub (público ou privado).
+
+2. Adicione o remote: `git remote add origin https://github.com/SEU_USERNAME/NOME_REPO.git`
+
+3. Push: `git push -u origin master`
+
+## Relatório Comparativo
+
+### Tempos de Execução (exemplo aproximado)
+
+- **Inserção**:
+  - PostgreSQL: ~0.01s
+  - MongoDB: ~0.005s
+
+- **Consulta**:
+  - PostgreSQL: ~0.002s
+  - MongoDB: ~0.001s
+
+### Dificuldade de Query
+
+Ambos os sistemas permitem consultar campos profundamente aninhados, mas a sintaxe difere:
+
+- **PostgreSQL**: Usa operadores `->` para navegar no JSONB, e.g., `data->'level1'->'level2'->...->'level15'`. Para 15 níveis, a query fica longa, mas é direta.
+
+- **MongoDB**: Usa notação de ponto no projection, e.g., `{"level1.level2...level15": 1}`. Também longa para 15 níveis.
+
+O esforço é similar: ambas requerem especificar o caminho completo. MongoDB pode ser ligeiramente mais intuitivo com dot notation, mas ambos escalam mal para profundidades muito grandes. PostgreSQL oferece mais flexibilidade com operadores como `#>` para caminhos dinâmicos.
+
+### Conclusão
+
+Para JSONs aninhados, ambos são viáveis, mas considere a profundidade e a frequência de queries profundas. MongoDB é nativo para documentos, enquanto PostgreSQL JSONB é poderoso para SQL-based queries.
